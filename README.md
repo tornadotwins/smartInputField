@@ -10,53 +10,56 @@ or any other toolbar use.
 Currently an inputField can be a 'size' element (a number input that can differentiate between pixels and percentage),
 and a dropdown element. To create a new 'size' input field:
 
-var sizer = new inputField(
-{
-    'container': '#thingyHere',     //jquery reference or jquery search string for the container
-    'id': 'editWidth',              //id-name to use (optional)
-    'disabled': true,               //start the field off disabled or not (optional)
-    'onoff': true,                  //add ability to turn the field on or off (optional)
-    'value': '85%',                 //default value (in pixels "90px" or percent "90%") (optional)
-    'type': 'size',                 //type of input field ('size' or 'dropdown')
-    'placeholder': "Width",         //placeholder name (in case no value is specified) (optional)
-    'callback': function (value)    //callback function that's called on-change and on enable/disable
+
+    var sizer = new inputField(
     {
-        console.log('Size callback says:');
-        console.log(value);
-    }
-});
+        'container': '#thingyHere',     //jquery reference or jquery search string for the container
+        'id': 'editWidth',              //id-name to use (optional)
+        'disabled': true,               //start the field off disabled or not (optional)
+        'onoff': true,                  //add ability to turn the field on or off (optional)
+        'value': '85%',                 //default value (in pixels "90px" or percent "90%") (optional)
+        'type': 'size',                 //type of input field ('size' or 'dropdown')
+        'placeholder': "Width",         //placeholder name (in case no value is specified) (optional)
+        'callback': function (value)    //callback function that's called on-change and on enable/disable
+        {
+            console.log('Size callback says:');
+            console.log(value);
+        }
+    });
+
    
 To create a dropdown menu, use the following:
 
-var dropdown = new inputField(
-{
-    'container': '#droppyHere',     //jquery reference or jquery search string for the container
-    'id': 'editAlignment',          //id-name to use (optional)
-    'disabled': false,              //start the field off disabled or not (optional)
-    'type': 'dropdown',             //type of input field ('size' or 'dropdown')
-    'onoff': true,                  //add ability to turn the field on or off (optional)
-    'options':                      //The <options> (value, label) to add to the dropdown
+
+    var dropdown = new inputField(
     {
-        'left': "Left",
-        'right': "Right",
-        'center': "Center"          //callback function that's called on-change and on enable/disable
-    },
-    'callback': function (value)    
-    {
-        console.log('dropdown callback says:');
-        console.log(value);
-    }
-});
+        'container': '#droppyHere',     //jquery reference or jquery search string for the container
+        'id': 'editAlignment',          //id-name to use (optional)
+        'disabled': false,              //start the field off disabled or not (optional)
+        'type': 'dropdown',             //type of input field ('size' or 'dropdown')
+        'onoff': true,                  //add ability to turn the field on or off (optional)
+        'options':                      //The <options> (value, label) to add to the dropdown
+        {
+            'left': "Left",
+            'right': "Right",
+            'center': "Center"          //callback function that's called on-change and on enable/disable
+        },
+        'callback': function (value)    
+        {
+            console.log('dropdown callback says:');
+            console.log(value);
+        }
+    });
 
 
 The following methods can be use to influence the inputField at realtime:
+
 
     inputField.getValue()               //return the value of the input field
     inputField.disable()                //disable the input field
     inputField.enable()                 //enable the input field
     inputField.setValue(v, force)       //set the value of the field to v, force(optional) is a bool to let the callback function know or not
     inputField.setErrorMessage(html)    //create an error message underneath the field
-
 
 
 TODO: Add support for dynamically added options to the dropdown type
