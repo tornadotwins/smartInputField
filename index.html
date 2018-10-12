@@ -1,0 +1,242 @@
+<html>
+    <head>
+        <!-- Latest jQuery -->	
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+        <!-- Circular Progress Bar -->
+        <script src="smartInputField.js"></script>
+        <link rel="stylesheet" href="smartInputField.css" />
+    </head>
+    <body>
+        <style>
+        /* Center everything on the page */
+        html, body 
+        {
+            background-color: #E4EDF9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            font-family: sans-serif;  
+            margin:0;
+            padding:0;
+        }
+
+        .center 
+        { 
+            height: 100%;
+            width: 100%;
+            position: relative;
+            background-color:#F0F5FF;
+        }
+
+        .center > div 
+        {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            background-color: #B5D3ED;
+            padding: 20px;
+            border-radius: 10px;
+
+            -webkit-box-shadow: 0px 0px 53px -7px rgba(101,129,229,0.4);
+            -moz-box-shadow: 0px 0px 53px -7px rgba(101,129,229,0.4);
+            box-shadow: 0px 0px 53px -7px rgba(101,129,229,0.4);
+        }
+
+        .center p
+        {
+            margin:7px;
+        }
+
+        button
+        {
+            display:block;
+            width: 200px;
+            height:35px;
+            background-color: #98BFE0;
+            color:white;
+            border-radius:5px;
+            border:none;
+            margin-top:16px;
+        }
+
+        button:hover
+        {
+            background-color: #638EE9;
+            color:white;
+        }
+
+        h3
+        {
+            text-align:center;
+        }
+
+        #exampleContainer
+        {
+            width:400px;
+            height:400px;
+            border:1px dotted white;
+        }
+
+        #exampleBox
+        {
+            position:relative;
+            text-align:left;
+            height:100px;
+            background-color:orange;
+            border-radius:5px;
+        }
+
+        p
+        {
+            margin-top:5px;
+        }
+        </style>
+
+        
+
+        <!-- Example DOM -->
+        <div class="center">
+            <div>
+                <table>
+                    <tr>
+                        <td valign="top">
+                            <h3>smart inputField</h3>
+                            <p>Width:</p>
+                            <p>
+                                <div id="editWidthContainer" style="min-width:300px;">
+
+                                </div>
+                            </p>
+                            <br/><br/><br/>
+                            <p style="clear:both;">Text-Align:</p>
+                            <p>
+                                <div id="editAlignContainer"></div>
+                            </p>
+                            <br/><br/><br/>
+                            <p style="clear:both;">Margin:</p>
+                            <p>
+                                <div id="editPaddingContainer"></div>
+                            </p>
+                        </td>
+                        <td>
+                            <div id="exampleContainer">
+                                <div id="exampleBox" style="width:80%; margin:3px;">
+                                    Example text
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+
+        
+
+        <script>
+            var sizer = new inputField(
+            {
+                'container': '#editWidthContainer',
+                'id': 'editWidth',
+                'disabled': false,
+                'onoff': true,
+                'value': $('#exampleBox').get(0).style.width,
+                'type': 'size',
+                'placeholder': "Width",
+                'callback': function (value)
+                {
+                    console.log('Width callback says:');
+                    console.log(value);
+
+                    switch(value)
+                    {
+                        case "enabled":
+                            $('#exampleBox').get(0).style.width = sizer.getValue();
+                        break;
+
+                        case "disabled":
+                            $('#exampleBox').get(0).style.width = null;
+                        break;
+
+                        default:
+                            $('#exampleBox').get(0).style.width = value;
+                        break;
+                    }
+                }
+            });
+
+            var margin = new inputField(
+            {
+                'container': '#editPaddingContainer',
+                'id': 'editPadding',
+                'disabled': false,
+                'onoff': true,
+                'value': $('#exampleBox').get(0).style.margin,
+                'type': 'size',
+                'placeholder': "Margin",
+                'callback': function (value)
+                {
+                    console.log('Margin callback says:');
+                    console.log(value);
+
+                    switch(value)
+                    {
+                        case "enabled":
+                            $('#exampleBox').get(0).style.margin = margin.getValue();
+                        break;
+
+                        case "disabled":
+                            $('#exampleBox').get(0).style.margin = null;
+                        break;
+
+                        default:
+                            $('#exampleBox').get(0).style.margin = value;
+                        break;
+                    }
+                }
+            });
+            
+            var dropdown = new inputField(
+            {
+                'container': '#editAlignContainer',     
+                'id': 'editAlignment',    
+                'disabled': false,          
+                'type': 'dropdown',        
+                'onoff': true,             
+                'options':          
+                {
+                    'left': "Left",
+                    'right': "Right",
+                    'center': "Center"         
+                },
+                'callback': function (value)    
+                {
+                    console.log('Text-align callback says:');
+                    console.log(value);
+
+                    switch(value)
+                    {
+                        case "enabled":
+                            $('#exampleBox').css('text-align', dropdown.getValue() );
+                        break;
+
+                        case "disabled":
+                            $('#exampleBox').css('text-align', 'left' );
+                        break;
+
+                        default:
+                            $('#exampleBox').css('text-align', value );
+                        break;
+                    }
+                }
+            });
+
+        </script>
+    </body>
+</html>
