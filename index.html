@@ -1,9 +1,15 @@
 <html>
     <head>
         <!-- Latest jQuery -->	
-        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <!--<script src="https://code.jquery.com/jquery-latest.min.js"></script>-->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-        <!-- Circular Progress Bar -->
+        <!-- Range Slider (source: http://rangeslider.js.org/) -->
+        <!--<script scr="/api/rangeslider.js-2.3.0/rangeslider.js"></script>-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.css" />
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.js'></script>
+
+        <!-- smartInputField -->
         <script src="smartInputField.js"></script>
         <link rel="stylesheet" href="smartInputField.css" />
     </head>
@@ -89,7 +95,6 @@
             text-align:left;
             height:100px;
             background-color:orange;
-            border-radius:5px;
         }
 
         p
@@ -98,7 +103,10 @@
         }
         </style>
 
+        <style>
         
+
+        </style>
 
         <!-- Example DOM -->
         <div class="center">
@@ -109,7 +117,7 @@
                             <h3>smart inputField</h3>
                             <p>Width:</p>
                             <p>
-                                <div id="editWidthContainer" style="min-width:300px;">
+                                <div id="editWidthContainer" style="min-width:400px;">
 
                                 </div>
                             </p>
@@ -123,10 +131,17 @@
                             <p>
                                 <div id="editPaddingContainer"></div>
                             </p>
+                            <br/><br/><br/>
+                            <p style="clear:both;">Round Corners:</p>
+
+                                <div id="holder">
+                                </div>
+
+                            </div>
                         </td>
                         <td>
                             <div id="exampleContainer">
-                                <div id="exampleBox" style="width:80%; margin:3px;">
+                                <div id="exampleBox" style="width:80%; margin:3px; border-radius:7px;">
                                     Example text
                                 </div>
                             </div>
@@ -138,105 +153,135 @@
         </div>
 
         
-
+        
         <script>
-            var sizer = new inputField(
+
+        var slider = new inputField(
+        {
+            type: 'slider',
+            container: '#holder',
+            id: 'editRoundCorners',
+            disabled: false,
+            onoff: true,
+            min: 0,
+            max: 50,
+            value: $('#exampleBox').get(0).style.borderRadius,
+            callback: function(value)
             {
-                'container': '#editWidthContainer',
-                'id': 'editWidth',
-                'disabled': false,
-                'onoff': true,
-                'value': $('#exampleBox').get(0).style.width,
-                'type': 'size',
-                'placeholder': "Width",
-                'callback': function (value)
+                switch(value)
                 {
-                    console.log('Width callback says:');
-                    console.log(value);
+                    case "enabled":
+                        $('#exampleBox').get(0).style.borderRadius = slider.getValue();
+                    break;
 
-                    switch(value)
-                    {
-                        case "enabled":
-                            $('#exampleBox').get(0).style.width = sizer.getValue();
-                        break;
+                    case "disabled":
+                        $('#exampleBox').get(0).style.borderRadius = null;
+                    break;
 
-                        case "disabled":
-                            $('#exampleBox').get(0).style.width = null;
-                        break;
-
-                        default:
-                            $('#exampleBox').get(0).style.width = value;
-                        break;
-                    }
+                    default:
+                        $('#exampleBox').get(0).style.borderRadius = value;
+                    break;
                 }
-            });
+            }
+        });
 
-            var margin = new inputField(
+
+        var sizer = new inputField(
+        {
+            'container': '#editWidthContainer',
+            'id': 'editWidth',
+            'disabled': false,
+            'onoff': true,
+            'value': $('#exampleBox').get(0).style.width,
+            'type': 'size',
+            'placeholder': "Width",
+            'callback': function (value)
             {
-                'container': '#editPaddingContainer',
-                'id': 'editPadding',
-                'disabled': false,
-                'onoff': true,
-                'value': $('#exampleBox').get(0).style.margin,
-                'type': 'size',
-                'placeholder': "Margin",
-                'callback': function (value)
+                console.log('Width callback says:');
+                console.log(value);
+
+                switch(value)
                 {
-                    console.log('Margin callback says:');
-                    console.log(value);
+                    case "enabled":
+                        $('#exampleBox').get(0).style.width = sizer.getValue();
+                    break;
 
-                    switch(value)
-                    {
-                        case "enabled":
-                            $('#exampleBox').get(0).style.margin = margin.getValue();
-                        break;
+                    case "disabled":
+                        $('#exampleBox').get(0).style.width = 'none';
+                    break;
 
-                        case "disabled":
-                            $('#exampleBox').get(0).style.margin = null;
-                        break;
-
-                        default:
-                            $('#exampleBox').get(0).style.margin = value;
-                        break;
-                    }
+                    default:
+                        $('#exampleBox').get(0).style.width = value;
+                    break;
                 }
-            });
-            
-            var dropdown = new inputField(
+            }
+        });
+
+        var margin = new inputField(
+        {
+            'container': '#editPaddingContainer',
+            'id': 'editPadding',
+            'disabled': false,
+            'onoff': true,
+            'value': $('#exampleBox').get(0).style.margin,
+            'type': 'size',
+            'placeholder': "Margin",
+            'callback': function (value)
             {
-                'container': '#editAlignContainer',     
-                'id': 'editAlignment',    
-                'disabled': false,          
-                'type': 'dropdown',        
-                'onoff': true,             
-                'options':          
+                console.log('Margin callback says:');
+                console.log(value);
+
+                switch(value)
                 {
-                    'left': "Left",
-                    'right': "Right",
-                    'center': "Center"         
-                },
-                'callback': function (value)    
-                {
-                    console.log('Text-align callback says:');
-                    console.log(value);
+                    case "enabled":
+                        $('#exampleBox').get(0).style.margin = margin.getValue();
+                    break;
 
-                    switch(value)
-                    {
-                        case "enabled":
-                            $('#exampleBox').css('text-align', dropdown.getValue() );
-                        break;
+                    case "disabled":
+                        $('#exampleBox').get(0).style.margin = null;
+                    break;
 
-                        case "disabled":
-                            $('#exampleBox').css('text-align', 'left' );
-                        break;
-
-                        default:
-                            $('#exampleBox').css('text-align', value );
-                        break;
-                    }
+                    default:
+                        $('#exampleBox').get(0).style.margin = value;
+                    break;
                 }
-            });
+            }
+        });
+        
+        var dropdown = new inputField(
+        {
+            'container': '#editAlignContainer',     
+            'id': 'editAlignment',    
+            'disabled': false,          
+            'type': 'dropdown',        
+            'onoff': true,             
+            'options':          
+            {
+                'left': "Left",
+                'right': "Right",
+                'center': "Center"         
+            },
+            'callback': function (value)    
+            {
+                console.log('Text-align callback says:');
+                console.log(value);
 
+                switch(value)
+                {
+                    case "enabled":
+                        $('#exampleBox').css('text-align', dropdown.getValue() );
+                    break;
+
+                    case "disabled":
+                        $('#exampleBox').css('text-align', 'left' );
+                    break;
+
+                    default:
+                        $('#exampleBox').css('text-align', value );
+                    break;
+                }
+            }
+        });
         </script>
     </body>
 </html>

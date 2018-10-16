@@ -122,6 +122,7 @@ select:hover, input:hover
 .subBtn_off:hover
 {
     background-color: #ebf6ff;
+    color: #638EE9;
 }
 
 .subBtn_off_disabled
@@ -207,4 +208,78 @@ select:hover, input:hover
 .checkbox input[type=checkbox]:checked + label:after 
 {
     opacity: 1;
+}
+
+/* RANGE SLIDER */
+
+.slider-container
+{
+    width:calc(100% - 129px); 
+    float: left;
+    margin: 0px;
+}
+
+.rangeslider
+{
+    max-width: 400px;
+    background-color: #EBF6FF;
+    box-shadow:none;
+}
+
+.rangeslider__handle 
+{
+    border-radius: 22px;
+    text-align: center;
+    color:white;
+
+    background-color:#77A1C5;
+    border:none;
+    height:25px;
+    width:25px;
+    border-radius:5px;
+
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-image:none;
+
+    top:-7px;
+    line-height: 28px;
+    min-width:42px;
+}
+.rangeslider__handle:after 
+{
+    background: 0;
+} 
+
+.rangeslider--horizontal 
+{
+    height: 6px;
+    width: 100%;
+}
+
+.rangeslider__fill
+{
+    background:white;
+    box-shadow:none;
+}
+
+
+.slider-aligner
+{
+    width:100%;
+    height:44px;
+    -webkit-transform: translateY(50%);
+    -ms-transform: translateY(50%);
+    transform: translateY(50%);
+}
+
+.slider-pxpc-container
+{
+    float:right;
+    background-color:#ebf6ff; 
+    width: 86px;
+    height: 43px;
+    border-radius: 6px; 
+    margin-top: 3px;
 }

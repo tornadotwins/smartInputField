@@ -75,9 +75,12 @@ function inputField (options = {})
         if(options.id)          {   this.setId(options.id);                     }
         if(options.name)        {   this.setName(options.name);                 }
         if(options.disabled)    {   this.setDisabled(options.disabled);         }
-        if(options.callback)    {   this.setCallback(options.callback);         }
-        if(options.value)       {   this.setStartValue(options.value);          }
-        if(options.onoff)       {   this.setOnOff(options.onoff);               }
+        if(options.callback)                            {   this.setCallback(options.callback);         }
+        if(typeof options.value !== 'undefined')        {   this.setStartValue(options.value);          }
+        if(options.onoff)                               {   this.setOnOff(options.onoff);               }
+        if(typeof options.min !== 'undefined')          {   this.setMin(options.min);                   }
+        if(typeof options.max !== 'undefined')          {   this.setMax(options.max);                   }
+        if(typeof options.step !== 'undefined')         {   this.setStep(options.step);                 }
 
         //start it up!
         this.create();
@@ -196,6 +199,19 @@ function inputField (options = {})
                 }
             break;
 
+            case "slider":
+
+                //return the value, either in percent or in pixels
+                if(this.valueInPercent)
+                {
+                    return this.element.val()+"%";
+                }
+                else
+                {
+                    return this.element.val()+"px";
+                }
+            break;
+
             case "dropdown":
                 //return the value of the selected item
                 return $("#"+this.id+" option:selected").val();
@@ -208,12 +224,36 @@ function inputField (options = {})
     {
         switch(this.type)
         {
+            
+            case 'slider':
+                var hasPx = v.indexOf('px') >= 0;
+                var hasPc = v.indexOf('%')  >= 0;
+
+                //force value to an integer
+                v = parseInt(v, 10);
+                
+                //console.log('updating slider value: '+v);
+                this.element.val(v).change();
+                this.element.rangeslider('update');
+
+                if(hasPc)
+                {
+                    this.setSizeToPercent(v);
+                }
+                else
+                {
+                    this.setSizeToPixels(v);
+                }
+            break;
+            
+            
             case "size":
                 var hasPx = v.indexOf('px') >= 0;
                 var hasPc = v.indexOf('%')  >= 0;
 
                 //force value to an integer
                 v = parseInt(v, 10);
+                
                 this.element.val(v);
 
                 if(hasPc)
@@ -224,7 +264,6 @@ function inputField (options = {})
                 {
                     this.setSizeToPixels(v);
                 }
-                
             break;
 
             case "dropdown":
@@ -307,6 +346,10 @@ function inputField (options = {})
             case "dropdown":
                 this.type = "dropdown";
             break;
+
+            case "slider":
+                this.type = "slider";
+            break;
         }
     };
     
@@ -341,6 +384,10 @@ function inputField (options = {})
 
             case "size":
                 this.createSize();
+            break;
+
+            case "slider":
+                this.createSlider();
             break;
         }
     };
@@ -436,6 +483,204 @@ function inputField (options = {})
             this.errorElement.html(html);
         }
     };
+
+    this.rangeMin = 0;
+    this.setMin = function(min)
+    {
+        this.rangeMin = Number(min);
+    };
+    this.rangeMax = 50;
+    this.setMax = function(max)
+    {
+        this.rangeMax = Number(max);
+    };
+    this.rangeStep = 1;
+    this.setStep = function(step)
+    {
+        this.rangeStep = Number(step);
+    };
+
+    /**
+     * Creates a range 'slider' element that works in all major browsers & mobile 
+    */
+    this.createSlider = function()
+    {
+        /* 
+        <div class="checkbox">
+            <input type="checkbox" id="slidy_onoff">
+            <label for="slidy_onoff"></label>
+        </div>
+        <div class="slider-container">
+            <div class="slider-aligner">
+                <input
+                    id="slidy"
+                    type="range"
+                    min="0"                    
+                    max="50"                 
+                    step="1"                   
+                    value="0"                 
+                    data-orientation="horizontal"
+                >
+            </div>
+        </div> 
+        <div class="slider-pxpc-container">
+            <button class="inputSubButton subBtn_off" id="slidy_px">px</button>
+            <button class="inputSubButton subBtn_on" id="slidy_pc">%</button>
+        </div>
+        */
+        
+        //Don't create anything without a specified container
+        if(!this.container) { return; }
+        //Don't create twice
+        if(this.created)    { return; }
+
+        var input = $('<input />');
+
+        if(this.name)       { input.attr('name', this.name);                }
+        if(this.disabled)   { input.prop('disabled', 'disabled');           }
+        if(!this.id)
+        {
+            this.id = this.createRandomString();
+        }
+        input.attr('id', this.id);
+        input.attr('type', 'range');
+        input.attr('data-orientation', 'horizontal');
+
+        //min and max are set now, but startvalue (value) is set after creation
+        input.attr('min', this.rangeMin);
+        input.attr('max', this.rangeMax);
+        input.attr('step', this.rangeStep);
+
+        slider_aligner = $('<div/>');
+        slider_aligner.addClass('slider-aligner');
+
+        slider_container = $('<div/>');
+        slider_container.addClass('slider-container');
+
+        if(this.onoff)
+        {
+            slider_container.css('width', 'calc(100% - 129px)');
+        }
+        else
+        {
+            slider_container.css('width', 'calc(100% - 89px)');
+        }
+
+        slider_aligner.append(input);
+        slider_container.append(slider_aligner);
+
+        this.container.append(slider_container);
+
+
+        var that = this;
+
+        var button_container = $('<div/>');
+        button_container.addClass('slider-pxpc-container');
+
+        //percent button
+        var pcBtn = $('<button/>');
+        pcBtn.addClass('inputSubButton');
+        pcBtn.addClass('subBtn_off');
+        pcBtn.attr('id', this.id+"_pc");
+        pcBtn.text('%');
+        pcBtn.off('click').on('click', function ()
+        {
+            if(that.disabled) { return; }
+            that.setSizeToPercent();
+            if(that.callback) 
+            {
+                that.callback(that.getValue());
+            }
+        });
+
+        //pixel button
+        var pxBtn = $('<button/>');
+        pxBtn.addClass('inputSubButton');
+        pxBtn.addClass('subBtn_on');    //use pixels by default
+        pxBtn.attr('id', this.id+"_px");
+        pxBtn.text('px');
+        pxBtn.off('click').on('click', function ()
+        {
+            if(that.disabled) { return; }
+            that.setSizeToPixels();
+            if(that.callback) 
+            {
+                that.callback(that.getValue());
+            }
+        });
+
+        //use pixels by default
+        this.valueInPixels = true;
+
+        button_container.append(pcBtn);
+        button_container.append(pxBtn);
+        this.container.append(button_container);
+
+
+        //check if we need an on/off switch
+        if(this.onoff)
+        {
+            var oo = this.createOnOff();
+            this.container.prepend(oo);
+        }
+        
+        //add an error message container
+        this.container.append('<div class="error_msg" id="error_'+this.id+'" />')
+        this.errorElement = $('#error_'+this.id);
+
+        //keep a reference to the element in memory
+        this.element = $('#'+this.id);
+
+        //activate the element as range
+        this.element.rangeslider(
+        {
+            polyfill: false,
+            onInit: function () 
+            {
+                var $handle = $('.rangeslider__handle', this.$range);
+                that.updateRangeHandle($handle[0], this.value);
+            } 
+        });
+
+        this.element.on('input', function (e) 
+        {
+            var $handle = $('.rangeslider__handle', e.target.nextSibling);
+            that.updateRangeHandle($handle[0], this.value);
+        });
+
+        //make sure any specified callback gets called if we're given one
+        if(this.callback)
+        {
+            $(document).on('change','#'+this.id,function()
+            {
+                that.callback(that.getValue());
+            });
+        }
+
+        //let all other functions know we're past the creation phase
+        this.created = true;
+
+        //if there was a start value, apply it (now that creation is done)
+        if(this.startValue)
+        {
+            this.setValue(this.startValue, false);
+        }
+
+        if(this.disabled)
+        {
+            this.disable();
+        }
+
+
+    };
+
+    /**
+     * Updates the number on the Range Slider's handle when it's being used
+    */
+    this.updateRangeHandle = function (el, val) 
+    {
+        el.textContent = val;
+    }
 
     /**
      * Creates a 'size' element, which is a numeric value either in pixels or percentage
@@ -546,7 +791,7 @@ function inputField (options = {})
         //let all other functions know we're past the creation phase
         this.created = true;
 
-        //if there was a start value, apply it (not that creation is done)
+        //if there was a start value, apply it (now that creation is done)
         if(this.startValue)
         {
             this.setValue(this.startValue, false);
@@ -605,8 +850,13 @@ function inputField (options = {})
             //enable the main element
             this.element.prop( "disabled", false);
 
+            if(this.type == "slider")
+            {
+                this.element.rangeslider('update');
+            }
+
             //enable the buttons on the sizer
-            if(this.type == "size")
+            if(this.type == "size" || this.type == "slider")
             {
                 var percent = this.container.find('#'+this.id+"_pc");
                 //we have to check for both disabled and enabled, since a dev can call .enable() twice
@@ -651,8 +901,13 @@ function inputField (options = {})
             //disable the main element
             this.element.prop( "disabled", 'disabled' );
 
+            if(this.type == "slider")
+            {
+                this.element.rangeslider('update');
+            }
+
             //disable the size buttons on the sizer
-            if(this.type == "size")
+            if(this.type == "size" || this.type == "slider")
             {
                 var percent = this.container.find('#'+this.id+"_pc");
                 //we have to check for both disabled and enabled, since a dev can call .disable() twice
