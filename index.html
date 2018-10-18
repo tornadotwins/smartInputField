@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <!-- Latest jQuery -->	
@@ -116,28 +117,27 @@
                         <td valign="top">
                             <h3>smart inputField</h3>
                             <p>Width:</p>
-                            <p>
-                                <div id="editWidthContainer" style="min-width:400px;">
+                            
+                            <div id="editWidthContainer" style="min-width:400px;">
 
-                                </div>
-                            </p>
+                            </div>
+                            
                             <br/><br/><br/>
                             <p style="clear:both;">Text-Align:</p>
-                            <p>
-                                <div id="editAlignContainer"></div>
-                            </p>
+                            
+                            <div id="editAlignContainer"></div>
+                            
                             <br/><br/><br/>
                             <p style="clear:both;">Margin:</p>
-                            <p>
-                                <div id="editPaddingContainer"></div>
-                            </p>
+                            
+                            <div id="editPaddingContainer"></div>
+                            
                             <br/><br/><br/>
                             <p style="clear:both;">Round Corners:</p>
 
-                                <div id="holder">
-                                </div>
-
+                            <div id="holder">
                             </div>
+                            
                         </td>
                         <td>
                             <div id="exampleContainer">
@@ -168,6 +168,9 @@
             value: $('#exampleBox').get(0).style.borderRadius,
             callback: function(value)
             {
+                console.log('BorderRadius callback says:');
+                console.log(value);
+
                 switch(value)
                 {
                     case "enabled":

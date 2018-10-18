@@ -69,7 +69,7 @@ select:hover, input:hover
     font-size: 16px;
     margin: 5px 0px 0px 10px;
     height: 35px;
-    width: calc(100% - 91px);
+    width: calc(100% - 99px);
     padding-right: 4px;
 
     appearance:none;
@@ -260,7 +260,7 @@ select:hover, input:hover
 
 .rangeslider__fill
 {
-    background:white;
+    background: #98BFE0;
     box-shadow:none;
 }
 

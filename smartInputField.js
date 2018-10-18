@@ -74,7 +74,7 @@ function inputField (options = {})
         if(options.options)     {   this.addDropdownOptions(options.options);   }
         if(options.id)          {   this.setId(options.id);                     }
         if(options.name)        {   this.setName(options.name);                 }
-        if(options.disabled)    {   this.setDisabled(options.disabled);         }
+        if(typeof options.disabled !== "undefined")     {   this.setDisabled(options.disabled);         }
         if(options.callback)                            {   this.setCallback(options.callback);         }
         if(typeof options.value !== 'undefined')        {   this.setStartValue(options.value);          }
         if(options.onoff)                               {   this.setOnOff(options.onoff);               }
@@ -850,6 +850,11 @@ function inputField (options = {})
             //enable the main element
             this.element.prop( "disabled", false);
 
+            if(this.onoff)
+            {
+                $('#'+this.id+"_onoff").prop('checked', true);
+            }
+
             if(this.type == "slider")
             {
                 this.element.rangeslider('update');
@@ -900,6 +905,11 @@ function inputField (options = {})
         {
             //disable the main element
             this.element.prop( "disabled", 'disabled' );
+
+            if(this.onoff)
+            {
+                $('#'+this.id+"_onoff").prop('checked', false);
+            }
 
             if(this.type == "slider")
             {
