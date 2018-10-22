@@ -1,10 +1,11 @@
 # smartInputField
 by Efraim Meulenberg
 
-Requires jQuery
-'Slider' requires rangeslider by André Ruffert (http://rangeslider.js.org/)
-
 [HOSTED EXAMPLE](http://tornadotwins.com/github/smartInputField)
+
+- Requires jQuery
+- 'Slider' requires rangeslider by André Ruffert (http://rangeslider.js.org/)
+- 'ColorPicker' requires Iris (http://automattic.github.io/Iris/)
 
 The inputField class creates interactive fields that are useful for realtime editing of css properties
 or any other toolbar use. 
@@ -71,6 +72,23 @@ To create a range-slider, use the following:
                 console.log('RangeSlider callback says:');
                 console.log(value);
             }
+        }
+    });
+
+To create a color picker, use the following:
+
+    var clrPickr = new inputField(
+    {
+        type: 'color',
+        container: '#clrPickr',
+        id: 'colorPickerId',
+        disabled: false,
+        onoff: true,
+        value: '#f7ad0c',
+        callback: function(value)
+        {
+            console.log('ColorPicker callback says:');
+            console.log(value);
         }
     });
 

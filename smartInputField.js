@@ -1,54 +1,101 @@
 /*
-inputField Class
+# smartInputField
 by Efraim Meulenberg
 
+[HOSTED EXAMPLE](http://tornadotwins.com/github/smartInputField)
+
 Requires jQuery
+'Slider' requires rangeslider by André Ruffert (http://rangeslider.js.org/)
+'ColorPicker' requires Iris (http://automattic.github.io/Iris/)
 
 The inputField class creates interactive fields that are useful for realtime editing of css properties
 or any other toolbar use. 
 Currently an inputField can be a 'size' element (a number input that can differentiate between pixels and percentage),
 and a dropdown element. To create a new 'size' input field:
 
-var sizer = new inputField(
-{
-    'container': '#thingyHere',     //jquery reference or jquery search string for the container
-    'id': 'editWidth',              //id-name to use (optional)
-    'disabled': true,               //start the field off disabled or not (optional)
-    'onoff': true,                  //add ability to turn the field on or off (optional)
-    'value': '85%',                 //default value (in pixels "90px" or percent "90%") (optional)
-    'type': 'size',                 //type of input field ('size' or 'dropdown')
-    'placeholder': "Width",         //placeholder name (in case no value is specified) (optional)
-    'callback': function (value)    //callback function that's called on-change and on enable/disable
+
+    var sizer = new inputField(
     {
-        console.log('Size callback says:');
-        console.log(value);
-    }
-});
+        'container': '#thingyHere',     //jquery reference or jquery search string for the container
+        'id': 'editWidth',              //id-name to use (optional)
+        'disabled': true,               //start the field off disabled or not (optional)
+        'onoff': true,                  //add ability to turn the field on or off (optional)
+        'value': '85%',                 //default value (in pixels "90px" or percent "90%") (optional)
+        'type': 'size',                 //type of input field ('size', 'slider' or 'dropdown')
+        'placeholder': "Width",         //placeholder name (in case no value is specified) (optional)
+        'callback': function (value)    //callback function that's called on-change and on enable/disable
+        {
+            console.log('Size callback says:');
+            console.log(value);
+        }
+    });
+
    
 To create a dropdown menu, use the following:
 
-var dropdown = new inputField(
-{
-    'container': '#droppyHere',     //jquery reference or jquery search string for the container
-    'id': 'editAlignment',          //id-name to use (optional)
-    'disabled': false,              //start the field off disabled or not (optional)
-    'type': 'dropdown',             //type of input field ('size' or 'dropdown')
-    'onoff': true,                  //add ability to turn the field on or off (optional)
-    'options':                      //The <options> (value, label) to add to the dropdown
+
+    var dropdown = new inputField(
     {
-        'left': "Left",
-        'right': "Right",
-        'center': "Center"          //callback function that's called on-change and on enable/disable
-    },
-    'callback': function (value)    
+        'container': '#droppyHere',     //jquery reference or jquery search string for the container
+        'id': 'editAlignment',          //id-name to use (optional)
+        'disabled': false,              //start the field off disabled or not (optional)
+        'type': 'dropdown',             //type of input field ('size', 'slider' or 'dropdown')
+        'onoff': true,                  //add ability to turn the field on or off (optional)
+        'options':                      //The <options> (value, label) to add to the dropdown
+        {
+            'left': "Left",
+            'right': "Right",
+            'center': "Center"          //callback function that's called on-change and on enable/disable
+        },
+        'callback': function (value)    
+        {
+            console.log('dropdown callback says:');
+            console.log(value);
+        }
+    });
+
+To create a range-slider, use the following:
+
+    var slider = new inputField(
     {
-        console.log('dropdown callback says:');
-        console.log(value);
-    }
-});
+        type: 'slider',                 //type of input field ('size', 'slider' or 'dropdown')
+        container: '#holder',
+        id: 'editRoundCorners',
+        disabled: false,
+        onoff: true,
+        min: 0,                         //minimum value of the range slider
+        max: 50,                        //maximum value of the range slider
+        value: 5,                       //start value of the range slider
+        callback: function(value)
+        {
+            switch(value)
+            {
+                console.log('RangeSlider callback says:');
+                console.log(value);
+            }
+        }
+    });
+
+To create a color picker, use the following:
+
+    var clrPickr = new inputField(
+    {
+        type: 'color',
+        container: '#clrPickr',
+        id: 'colorPickerId',
+        disabled: false,
+        onoff: true,
+        value: '#f7ad0c',
+        callback: function(value)
+        {
+            console.log('ColorPicker callback says:');
+            console.log(value);
+        }
+    });
 
 
 The following methods can be use to influence the inputField at realtime:
+
 
     inputField.getValue()               //return the value of the input field
     inputField.disable()                //disable the input field
@@ -56,9 +103,6 @@ The following methods can be use to influence the inputField at realtime:
     inputField.setValue(v, force)       //set the value of the field to v, force(optional) is a bool to let the callback function know or not
     inputField.setErrorMessage(html)    //create an error message underneath the field
 
-*/
-
-/*
 
 TODO: Add support for dynamically added options to the dropdown type
 
@@ -216,6 +260,11 @@ function inputField (options = {})
                 //return the value of the selected item
                 return $("#"+this.id+" option:selected").val();
             break;
+
+            //used by 'text' type, 'color' type, etc
+            default:
+                return this.element.val();
+            break;
         }
     };
 
@@ -268,6 +317,11 @@ function inputField (options = {})
 
             case "dropdown":
                 //if the option exist, this will select it
+                this.element.val(v);
+            break;
+
+            //used by type=text, type=color etc
+            default:
                 this.element.val(v);
             break;
         }
@@ -350,6 +404,14 @@ function inputField (options = {})
             case "slider":
                 this.type = "slider";
             break;
+
+            case 'color':
+                this.type = 'color';
+            break;
+
+            case 'colour':
+                this.type = 'color';
+            break;
         }
     };
     
@@ -388,6 +450,14 @@ function inputField (options = {})
 
             case "slider":
                 this.createSlider();
+            break;
+
+            case "text":
+                this.createText();
+            break;
+
+            case "color":
+                this.createColorPicker();
             break;
         }
     };
@@ -680,7 +750,251 @@ function inputField (options = {})
     this.updateRangeHandle = function (el, val) 
     {
         el.textContent = val;
-    }
+    };
+
+    this.cpVisible = false; //color picker visible?
+    this.createColorPicker = function()
+    {
+        
+        //Don't create anything without a specified container
+        if(!this.container) { return; }
+        //Don't create twice
+        if(this.created)    { return; }
+
+        /*
+        //given this.container
+        <div id="colorPicker">
+            
+            <div id="00_container" class="colorContainer">
+                <div id="00_colorShower" class="colorShower">
+                    <div id="00_arrow" class="colorArrowDown"></div>
+                </div>
+
+                //this.element
+                <input type="text" id='00' value="#ffa500" />    
+            </div>
+            <div id="00_colorPickerContainer" class="colorPickerContainer">
+            </div>
+        </div>
+        */
+        
+        var input = $('<input />');
+        if(this.name)       { input.attr('name', this.name);                }
+        if(this.disabled)   { input.prop('disabled', 'disabled');           }
+        if(this.placeholder){ input.attr('placeholder', this.placeholder);  }
+        if(!this.id)
+        {
+            this.id = this.createRandomString();
+        }
+
+        input.attr('id', this.id);
+        input.attr('type', 'text');
+        input.val(this.startValue);
+
+        //create colorContainer
+        var cc = $('<div/>');
+        cc.attr('id', this.id+"_container");
+        cc.addClass('colorContainer');
+
+        //make room for an on/off checkbox if we need it
+        if(this.onoff)
+        {
+            cc.css('margin-left', '38px');
+        }
+
+        //create colorShower
+        var cs = $('<div/>');
+        cs.attr('id', this.id+"_colorShower");
+        cs.addClass('colorShower');
+
+        //create dropdown arrow
+        var ca = $('<div/>');
+        ca.attr('id', this.id+'_arrow');
+        ca.addClass('colorArrowDown');
+
+        //create the floating container that holds the hidden colorpicker
+        var cpc = $('<div/>');
+        cpc.attr('id', this.id+"_colorPickerContainer");
+        cpc.addClass('colorPickerContainer');
+
+        //make room for an on/off checkbox if we need it
+        if(this.onoff)
+        {
+            cpc.css('margin-left', '38px');
+        }
+
+        cs.append(ca);
+        cc.append(cs);
+        cc.append(input);
+
+        //check if we need an on/off switch
+        if(this.onoff)
+        {
+            var oo = this.createOnOff();
+            this.container.append(oo);
+        }
+        
+        //add it to the DOM
+        this.container.append(cc);
+        this.container.append(cpc);
+
+        //add an error message container
+        this.container.append('<div class="error_msg" id="error_'+this.id+'" />')
+        this.errorElement = $('#error_'+this.id);
+
+        this.element = $('#'+this.id);
+
+        var that = this;
+
+        this.element.iris(
+        {
+            //don't hide just yet
+            hide: false,
+            target: $('#'+that.id+'_colorPickerContainer'),
+            color: that.element.val(),
+            //callback function
+            change: function(event, ui) 
+            {
+                // event = standard jQuery event, produced by whichever control was changed.
+                // ui = standard jQuery UI object, with a color member containing a Color.js object
+
+                // change the color-shower's color
+                $("#"+that.id+"_colorShower").css( 'background-color', ui.color.toString());
+
+                if(that.callback)
+                {
+                    that.callback(ui.color.toString());
+                }
+            }
+        });
+
+        //INIT: Now hide it, so that we can use toggle from there on
+        this.element.iris('hide');
+        $("#"+this.id+"_colorShower").css( 'background-color', this.element.val() );
+
+        this.cpVisible = false;
+        //Toggle the colorpicker plugin when we click on the colorshower
+        $('#'+this.id+'_colorShower').off('click').on('click', function () 
+        {
+            if(that.disabled) { return; }
+
+            if(that.cpVisible)
+            {
+                that.element.iris('hide');
+                $('#'+that.id+'_arrow').removeClass('colorArrowUp').addClass('colorArrowDown');
+                that.cpVisible = false;
+            }
+            else
+            {
+                that.element.iris('show');
+                $('#'+that.id+'_arrow').removeClass('colorArrowDown').addClass('colorArrowUp');
+                that.cpVisible = true;
+            }
+        });
+
+        //Don't show the colorpicker when we click on the input (to avoid annoyance when pasting hex code)
+        this.element.off('click').on('click', function()
+        {
+            return;
+        });
+
+        //Trigger the color change whenever a value changes (avoid having to press enter)
+        this.element.off('change').on('change', function () 
+        {
+            that.element.iris({color: that.element.val()});
+        });
+
+        //make sure any specified callback gets called if we're given one
+        if(this.callback)
+        {
+            $(document).on('change keydown paste input','#'+this.id,function()
+            {
+                that.callback(that.getValue());
+            });
+        }
+
+        //let all other functions know we're past the creation phase
+        this.created = true;
+    };
+
+    this.createText = function()
+    {
+        //Don't create anything without a specified container
+        if(!this.container) { return; }
+        //Don't create twice
+        if(this.created)    { return; }
+        
+        var input = $('<input />');
+        
+        if(this.name)       { input.attr('name', this.name);                }
+        if(this.disabled)   { input.prop('disabled', 'disabled');           }
+        if(this.placeholder){ input.attr('placeholder', this.placeholder);  }
+        if(!this.id)
+        {
+            this.id = this.createRandomString();
+        }
+        input.attr('id', this.id);
+        input.attr('type', 'text');
+        
+        
+        var that = this;
+
+        cont = $('<div/>');
+        cont.addClass('sizeInput-container');
+        if(this.onoff)
+        {
+            cont.css('width', 'calc(100% - 41px)');
+            cont.css('float', 'left');
+        }
+        else
+        {
+            cont.css('width', 'calc(100% - 6px)');
+        }
+        
+        cont.css('margin', '3px');
+        cont.append(input);
+                
+
+        //check if we need an on/off switch
+        if(this.onoff)
+        {
+            var oo = this.createOnOff();
+            this.container.append(oo);
+        }
+        
+        //add it to the DOM
+        this.container.append(cont);
+
+        //add an error message container
+        this.container.append('<div class="error_msg" id="error_'+this.id+'" />')
+        this.errorElement = $('#error_'+this.id);
+
+        //keep a reference to the element in memory
+        this.element = $('#'+this.id);
+
+        //make sure any specified callback gets called if we're given one
+        if(this.callback)
+        {
+            $(document).on('change keydown paste input','#'+this.id,function()
+            {
+                that.callback(that.getValue());
+            });
+        }
+
+        //let all other functions know we're past the creation phase
+        this.created = true;
+
+        //if there was a start value, apply it (now that creation is done)
+        if(this.startValue)
+        {
+            this.setValue(this.startValue, false);
+        }
+
+        if(this.disabled)
+        {
+            this.disable();
+        }
+    };
 
     /**
      * Creates a 'size' element, which is a numeric value either in pixels or percentage
@@ -855,6 +1169,12 @@ function inputField (options = {})
                 $('#'+this.id+"_onoff").prop('checked', true);
             }
 
+            if(this.type == "color")
+            {
+                //make it half-transparent, to show the color picker isn't in-use
+                this.container.css('opacity', '1');
+            }
+
             if(this.type == "slider")
             {
                 this.element.rangeslider('update');
@@ -914,6 +1234,20 @@ function inputField (options = {})
             if(this.type == "slider")
             {
                 this.element.rangeslider('update');
+            }
+
+            if(this.type == "color")
+            {
+                //make it half-transparent, to show the color picker isn't in-use
+                this.container.css('opacity', '0.4');
+
+                //if the colorpicker is still expanded, hide it
+                if(this.cpVisible)
+                {
+                    this.element.iris('hide');
+                    $('#'+this.id+'_arrow').removeClass('colorArrowUp').addClass('colorArrowDown');
+                    this.cpVisible = false;
+                }
             }
 
             //disable the size buttons on the sizer

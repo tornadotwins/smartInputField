@@ -5,6 +5,14 @@
         <!--<script src="https://code.jquery.com/jquery-latest.min.js"></script>-->
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
+        <!-- Latest jQuery UI -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+
+        <!-- Iris Color Picker -->
+        <script src="../Automattic-Iris/libs/color.js"></script>
+        <link rel="stylesheet" href="../Automattic-Iris/src/iris.css" />
+        <script src="../Automattic-Iris/src/iris.js"></script>
+
         <!-- Range Slider (source: http://rangeslider.js.org/) -->
         <!--<script scr="/api/rangeslider.js-2.3.0/rangeslider.js"></script>-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.0/rangeslider.min.css" />
@@ -13,6 +21,8 @@
         <!-- smartInputField -->
         <script src="smartInputField.js"></script>
         <link rel="stylesheet" href="smartInputField.css" />
+        
+        
     </head>
     <body>
         <style>
@@ -95,7 +105,7 @@
             position:relative;
             text-align:left;
             height:100px;
-            background-color:orange;
+            background-color:#f7ad0c;
         }
 
         p
@@ -118,9 +128,7 @@
                             <h3>smart inputField</h3>
                             <p>Width:</p>
                             
-                            <div id="editWidthContainer" style="min-width:400px;">
-
-                            </div>
+                            <div id="editWidthContainer" style="min-width:400px;"></div>
                             
                             <br/><br/><br/>
                             <p style="clear:both;">Text-Align:</p>
@@ -137,11 +145,16 @@
 
                             <div id="holder">
                             </div>
-                            
+
+                            <br/><br/><br/>
+                            <p style="clear:both;">Background Color:</p>
+
+                            <div id="clrPickr"></div>
+
                         </td>
                         <td>
                             <div id="exampleContainer">
-                                <div id="exampleBox" style="width:80%; margin:3px; border-radius:7px;">
+                                <div id="exampleBox" style="width:80%; margin:3px; border-radius:7px; padding: 10px;">
                                     Example text
                                 </div>
                             </div>
@@ -155,6 +168,22 @@
         
         
         <script>
+
+        var clrPickr = new inputField(
+        {
+            type: 'color',
+            container: '#clrPickr',
+            id: '11',
+            disabled: false,
+            onoff: true,
+            value: '#f7ad0c',
+            callback: function(value)
+            {
+                console.log('ColorPicker callback says:');
+                console.log(value);
+                $('#exampleBox').get(0).style.backgroundColor = value;
+            }
+        });
 
         var slider = new inputField(
         {
@@ -187,7 +216,6 @@
                 }
             }
         });
-
 
         var sizer = new inputField(
         {
