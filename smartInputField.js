@@ -318,6 +318,11 @@ function inputField (options = {})
             case "dropdown":
                 //if the option exist, this will select it
                 this.element.val(v);
+
+                if(this.element.val() !== v)
+                {
+                    console.warn('Setting dropdown value failed: '+v);
+                }
             break;
 
             //used by type=text, type=color etc
