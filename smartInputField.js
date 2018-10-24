@@ -473,7 +473,7 @@ function inputField (options = {})
     {
         $.each(this.options, function(value, name) 
         {
-            select.append( $('<option value="'+value+'"/>').text(name) );
+            select.append( $("<option value='"+value+"'/>").text(name) );
         });
 
         return select;        

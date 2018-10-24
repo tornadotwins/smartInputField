@@ -294,6 +294,7 @@ select:hover, input:hover
     height: 44px;
     border-radius: 10px 0px 0px 10px;
     float: left;
+    cursor:pointer;
 }
 .colorArrowDown
 {
