@@ -302,7 +302,7 @@ select:hover, input:hover
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid #ffffff;
+    border-top: 5px solid #cccccc;
     position: relative;
     top: 36px;
     left: 30px;
@@ -313,7 +313,7 @@ select:hover, input:hover
     height: 0; 
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid #ffffff;
+    border-bottom: 5px solid #cccccc;
     position: relative;
     top: 36px;
     left: 30px;

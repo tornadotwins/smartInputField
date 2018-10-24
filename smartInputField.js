@@ -325,6 +325,19 @@ function inputField (options = {})
                 }
             break;
 
+            case "color":
+                var updatedColor = this.rgbToHex(v);
+                this.element.val( updatedColor );
+                $("#"+this.id+"_colorShower").css( 'background-color', updatedColor );
+
+                if(this.callback && this.created && callback)
+                {
+                    this.callback(updatedColor);
+                }
+                //skip the callback at the end
+                return;
+            break;
+
             //used by type=text, type=color etc
             default:
                 this.element.val(v);
@@ -336,6 +349,22 @@ function inputField (options = {})
             this.callback(this.getValue());
         }
     };
+
+    this.rgbToHex = function(rgb) 
+    {
+        if (/^#[0-9A-F]{6}$/i.test(rgb)) 
+        {
+            return rgb;
+        }
+    
+        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        
+        function hex(x) 
+        {
+            return ("0" + parseInt(x).toString(16)).slice(-2);
+        }
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
 
     this.valueInPercent = false;
     this.valueInPixels  = false;
